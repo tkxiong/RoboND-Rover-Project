@@ -53,15 +53,15 @@ class RoverState():
         self.nav_dists = None # Distances of navigable terrain pixels
         self.ground_truth = ground_truth_3d # Ground truth worldmap
         self.mode = 'forward' # Current mode (can be forward or stop)
-        self.throttle_set = 0.2 # Throttle setting when accelerating
+        self.throttle_set = 0.3 # Throttle setting when accelerating
         self.brake_set = 10 # Brake setting when braking
         # The stop_forward and go_forward fields below represent total count
         # of navigable terrain pixels.  This is a very crude form of knowing
         # when you can keep going and when you should stop.  Feel free to
         # get creative in adding new fields or modifying these!
-        self.stop_forward = 50 # Threshold to initiate stopping
-        self.go_forward = 500 # Threshold to go forward again
-        self.max_vel = 2 # Maximum velocity (meters/second)
+        self.stop_forward = 80 # Threshold to initiate stopping
+        self.go_forward = 300 # Threshold to go forward again
+        self.max_vel = 1.5 # Maximum velocity (meters/second)
         # Image output from perception step
         # Update this image to display your intermediate analysis steps
         # on screen in autonomous mode
@@ -77,6 +77,15 @@ class RoverState():
         self.near_sample = 0 # Will be set to telemetry value data["near_sample"]
         self.picking_up = 0 # Will be set to telemetry value data["picking_up"]
         self.send_pickup = False # Set to True to trigger rock pickup
+        self.struck_counter = 0
+        self.pickup_counter = 0
+        self.slow_forward_counter = 0
+        self.slow_steering_counter = 0
+        self.vel_counter = 0
+        self.rock_angles = None
+        self.rock_dists = None
+        self.rock_found = False
+        
 # Initialize our rover 
 Rover = RoverState()
 
@@ -116,6 +125,8 @@ def telemetry(sid, data):
             out_image_string1, out_image_string2 = create_output_images(Rover)
 
             # The action step!  Send commands to the rover!
+            commands = (Rover.throttle, Rover.brake, Rover.steer)
+            send_control(commands, out_image_string1, out_image_string2)
  
             # Don't send both of these, they both trigger the simulator
             # to send back new telemetry so we must only send one
@@ -126,10 +137,6 @@ def telemetry(sid, data):
                 send_pickup()
                 # Reset Rover flags
                 Rover.send_pickup = False
-            else:
-                # Send commands to the rover!
-                commands = (Rover.throttle, Rover.brake, Rover.steer)
-                send_control(commands, out_image_string1, out_image_string2)
 
         # In case of invalid telemetry, send null commands
         else:

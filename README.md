@@ -102,6 +102,7 @@ plt.imshow(rock_threshed, cmap='gray')
 ![alt text][image9]
 
 #### Process image
+* Video link
 
 <a href="https://youtu.be/dpQAHWBvidI" target="_blank"><img src="output/process_image.jpg" alt="Process Image" width="480" height="320" border="10" /></a>
 
@@ -147,4 +148,5 @@ plt.imshow(rock_threshed, cmap='gray')
 
 <a href="https://youtu.be/LmgOaJYmFpw" target="_blank"><img src="output/final_result.jpg" alt="Final Result" width="480" height="320" border="10" /></a>
 
+video link
 

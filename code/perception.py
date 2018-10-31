@@ -119,9 +119,9 @@ def perception_step(Rover):
     rover_xpos, rover_ypos = Rover.pos[0], Rover.pos[1]
     world_size =  Rover.worldmap.shape[0]
     # 1) Define source and destination points for perspective transform
-    dst_size = 5 
+    dst_size = 8
     bottom_offset = 6
-    scale = 10
+    scale = 2 * dst_size
     source = np.float32([[14, 140], [301 ,140],[200, 96], [118, 96]])
     destination = np.float32([[rover_img.shape[1]/2 - dst_size, rover_img.shape[0] - bottom_offset],
                   [rover_img.shape[1]/2 + dst_size, rover_img.shape[0] - bottom_offset],
@@ -156,8 +156,8 @@ def perception_step(Rover):
         #          Rover.worldmap[navigable_y_world, navigable_x_world, 2] += 1
     if rover_roll <= 0.7 or rover_roll >= 359.5:
         if rover_pitch <= 0.7 or rover_pitch >= 359.5:
-            Rover.worldmap[obstacle_y_world, obstacle_x_world, 0] += 1
-            Rover.worldmap[path_y_world, path_x_world, 2] += 10
+            Rover.worldmap[obstacle_y_world, obstacle_x_world, 0] += 50
+            Rover.worldmap[path_y_world, path_x_world, 2] += 50
     
     # 8) Convert rover-centric pixel positions to polar coordinates
     # Update Rover pixel distances and angles
@@ -180,7 +180,7 @@ def perception_step(Rover):
         print(mean_rock_angle)
         # Identify rock when the rock distance is equal or less than 60.0 
         # and the rock is on the left side of the robot
-        if mean_rock_dist <= 60.0 and mean_rock_angle >= 0:
+        if mean_rock_dist <= 100.0 and mean_rock_angle >= 0:
             Rover.rock_found = True
 
         Rover.vision_image[:,:,1] = rock_threshed_img * 255     # rock_sample color-thresholded binary image
